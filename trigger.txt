@@ -13,9 +13,7 @@ BEGIN
 	SELECT @Seller_lname_new = NEW.Seller_lname from inserted NEW;
 
 	BEGIN
-	IF (@Seller_boss_id_new = @Seller_id_new)
-
-	ELSE
+	IF (@Seller_boss_id_new != @Seller_id_new)
 	WHILE Exists(SELECT Seller_id from [dbo].[SellerModels])
 	IF(@Seller_id_new = (SELECT Seller_boss_id from [dbo].[SellerModels]))
 	RAISERROR('Hierarchy error',16,1)
