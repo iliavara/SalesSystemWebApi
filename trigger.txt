@@ -14,8 +14,6 @@ BEGIN
 
 	BEGIN
 	IF (@Seller_boss_id_new = @Seller_id_new)
-	INSERT INTO SellerModels(Seller_id, Seller_boss_id, Seller_fname, Seller_lname)
-	VALUES (@Seller_id_new, @Seller_boss_id_new, @Seller_fname_new, @Seller_lname_new)
 
 	ELSE
 	WHILE Exists(SELECT Seller_id from [dbo].[SellerModels])
