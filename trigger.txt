@@ -1,0 +1,29 @@
+CREATE TRIGGER [dbo.boss_checker] ON [dbo].[SellerModels] AFTER INSERT
+AS
+BEGIN
+
+	DECLARE @Seller_id_new int;
+	DECLARE @Seller_boss_id_new int;
+	DECLARE @Seller_fname_new nvarchar(50);
+	DECLARE @Seller_lname_new nvarchar(50);
+
+	SELECT @Seller_id_new = NEW.Seller_id from inserted NEW;
+	SELECT @Seller_boss_id_new = NEW.Seller_boss_id from inserted NEW;
+	SELECT @Seller_fname_new = NEW.Seller_fname from inserted NEW;
+	SELECT @Seller_lname_new = NEW.Seller_lname from inserted NEW;
+
+	BEGIN
+	IF (@Seller_boss_id_new = @Seller_id_new)
+	INSERT INTO SellerModels(Seller_id, Seller_boss_id, Seller_fname, Seller_lname)
+	VALUES (@Seller_id_new, @Seller_boss_id_new, @Seller_fname_new, @Seller_lname_new)
+
+	ELSE
+	WHILE Exists(SELECT Seller_id from [dbo].[SellerModels])
+	IF(@Seller_id_new = (SELECT Seller_boss_id from [dbo].[SellerModels]))
+	RAISERROR('Hierarchy error',16,1)
+	END
+
+	INSERT INTO SellerModels(Seller_id, Seller_boss_id, Seller_fname, Seller_lname)
+	VALUES (@Seller_id_new, @Seller_boss_id_new, @Seller_fname_new, @Seller_lname_new)
+END
+GO
